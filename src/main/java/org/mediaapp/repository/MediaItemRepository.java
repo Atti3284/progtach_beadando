@@ -1,4 +1,7 @@
 package org.mediaapp.repository;
 
-public class MediaItemRepository {
+import org.mediaapp.model.MediaItem;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MediaItemRepository extends JpaRepository<MediaItem, Long> {
 }

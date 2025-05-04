@@ -1,4 +1,7 @@
 package org.mediaapp.repository;
 
-public class RatingRepository {
+import org.mediaapp.model.Rating;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface RatingRepository extends JpaRepository<Rating, Long> {
 }
