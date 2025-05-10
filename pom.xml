@@ -43,11 +43,11 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Biztonság (ha később login kell) -->
+        <!-- Biztonság (ha később login kell)
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
+        </dependency>-->
 
         <!-- Lombok (hogy ne kelljen getter/settert írni) -->
         <dependency>
