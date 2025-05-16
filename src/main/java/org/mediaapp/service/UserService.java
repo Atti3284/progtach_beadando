@@ -1,31 +1,41 @@
 package org.mediaapp.service;
 
 import org.mediaapp.model.User;
+import org.mediaapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
-    private final List<User> users = new ArrayList<>();
-    private  final AtomicLong idGenerator = new AtomicLong();
+    private final UserRepository repository;
 
-    public List<User> getAll(){
-        return users;
+    public UserService(UserRepository repository) {
+        this.repository = repository;
     }
 
-    public Optional<User> getById(Long id){
-        return users.stream().filter(u -> u.getId().equals(id)).findFirst();
+    public List<User> getAll() {
+        return repository.findAll();
     }
 
-    public User create(User user){
-        user.setId(idGenerator.incrementAndGet());
-        users.add(user);
-        return user;
+    public Optional<User> getById(Long id) {
+        return repository.findById(id);
     }
 
-    public boolean delete(Long id){
-        return users.removeIf(u -> u.getId().equels(id));
+    public User create(User user) {
+        return repository.save(user);
+    }
+
+    public User update(Long id, User userData) {
+        return repository.findById(id).map(user -> {
+            user.setUsername(userData.getUsername());
+            user.setEmail(userData.getEmail());
+            return repository.save(user);
+        }).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public void delete(Long id) {
+        repository.deleteById(id);
     }
 }

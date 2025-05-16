@@ -8,24 +8,23 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
       - name: Kód letöltése
         uses: actions/checkout@v3
 
-      - name: Java telepítése
+      - name: JDK beállítása
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build és teszt Maven-nel
+      - name: Maven build + teszt + Jacoco
         run: mvn clean verify
 
-      - name: Artifact mentése
-        uses: actions/upload-artifact@v4
+      - name: Artifact elmentése
+        uses: actions/upload-artifact@v3
         with:
-          name: mediaapp-artifact
+          name: mediaapp-jar
           path: target/*.jar

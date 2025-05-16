@@ -1,40 +1,49 @@
 package org.mediaapp.service;
 
 import org.mediaapp.model.Rating;
+import org.mediaapp.repository.RatingRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RatingService {
-    private final List<Rating> ratings = new ArrayList<>();
-    private final AtomicLong idGenerator = new AtomicLong();
+    private final RatingRepository repository;
 
-    public Rating create(Rating rating) {
-        rating.setId(idGenerator.incrementAndGet());
-        ratings.add(rating);
-        return rating;
+    public RatingService(RatingRepository repository) {
+        this.repository = repository;
     }
 
     public List<Rating> getAll() {
-        return ratings;
+        return repository.findAll();
+    }
+
+    public Optional<Rating> getById(Long id) {
+        return repository.findById(id);
+    }
+
+    public Rating create(Rating rating) {
+        return repository.save(rating);
+    }
+
+    public Rating update(Long id, Rating updated) {
+        return repository.findById(id).map(rating -> {
+            rating.setScore(updated.getScore());
+            rating.setComment(updated.getComment());
+            return repository.save(rating);
+        }).orElseThrow(() -> new RuntimeException("Rating not found"));
+    }
+
+    public void delete(Long id) {
+        repository.deleteById(id);
     }
 
     public List<Rating> getByUserId(Long userId) {
-        return ratings.stream()
-                .filter(r -> r.getUserId().equals(userId))
-                .collect(Collectors.toList());
+        return repository.findByUserId(userId);
     }
 
     public List<Rating> getByMediaItemId(Long mediaItemId) {
-        return ratings.stream()
-                .filter(r -> r.getMediaItemId().equals(mediaItemId))
-                .collect(Collectors.toList());
-    }
-
-    public boolean delete(Long id) {
-        return ratings.removeIf(r -> r.getId().equals(id));
+        return repository.findByMediaItemId(mediaItemId);
     }
 }
