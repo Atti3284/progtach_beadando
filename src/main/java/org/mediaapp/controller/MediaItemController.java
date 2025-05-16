@@ -1,34 +1,30 @@
 package org.mediaapp.controller;
 
 import org.mediaapp.model.MediaItem;
-import org.mediaapp.repository.MediaItemRepository;
-import lombok.RequiredArgsConstructor;
+import org.mediaapp.service.MediaService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/media")
-@RequiredArgsConstructor
 public class MediaItemController {
-    private final MediaItemRepository mediaItemRepository;
+    private final MediaService mediaService;
+
+    public MediaController (MediaService mediaService){
+        this.mediaService = mediaService;
+    }
     @GetMapping
-    public List<MediaItem> GetAllMediaItems(){
-        return mediaItemRepository.findAll();
+    public List<MediaItem> GetAllMedia(){
+        return mediaService.getAll();
     }
     @PostMapping
-    public MediaItem createMediaItem(@RequestBody MediaItem mediaItem){
-        return mediaItemRepository.save(mediaItem);
-    }
-
-    @GetMapping("/{id}")
-    public MediaItem getById(@PathVariable Long id){
-        return mediaItemRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nincs ilyen médiaelem: " + id));
+    public MediaItem createMedia(@RequestBody MediaItem mediaItem){
+        return mediaService.create(mediaItem);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteMediaItem(@PathVariable Long id){
-        mediaItemRepository.deleteById(id);
+    public void deleteMedia(@PathVariable Long id){
+        mediaService.delete(id);
     }
 }
