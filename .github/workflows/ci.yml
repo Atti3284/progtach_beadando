@@ -1,16 +1,31 @@
-name: CI Build
+name: Java CI with Maven
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Java
+      - name: Kód letöltése
+        uses: actions/checkout@v3
+
+      - name: Java telepítése
         uses: actions/setup-java@v3
         with:
           java-version: '17'
-      - name: Build with Maven
-        run: mvn clean install
+          distribution: 'temurin'
+
+      - name: Build és teszt Maven-nel
+        run: mvn clean verify
+
+      - name: Artifact mentése
+        uses: actions/upload-artifact@v4
+        with:
+          name: mediaapp-artifact
+          path: target/*.jar

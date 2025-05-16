@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/media")
-public class MediaItemController {
+public class MediaController {
     private final MediaService mediaService;
 
     public MediaController (MediaService mediaService){
