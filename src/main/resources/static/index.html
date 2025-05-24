@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8" />
+    <title>Media App</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h2 { margin-top: 40px; }
+        input, button, select { margin: 5px; }
+        .item { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
+        .inline { display: inline-block; margin-right: 10px; }
+    </style>
+</head>
+<body>
+
+<h1>Media App - Kezelőfelület</h1>
+
+<!-- Média kezelés -->
+<section>
+    <h2>Médiatartalmak</h2>
+    <div>
+        <input id="mediaTitle" placeholder="Cím" />
+        <input id="mediaType" placeholder="Típus (film/sorozat)" />
+        <button onclick="createMedia()">Új Média hozzáadása</button>
+    </div>
+    <div id="mediaList"></div>
+</section>
+
+<!-- Felhasználók -->
+<section>
+    <h2>Felhasználók</h2>
+    <div>
+        <input id="userName" placeholder="Felhasználónév" />
+        <input id="userEmail" placeholder="Email" />
+        <button onclick="createUser()">Új Felhasználó hozzáadása</button>
+    </div>
+    <div id="userList"></div>
+</section>
+
+<!-- Értékelések -->
+<section>
+    <h2>Értékelések</h2>
+    <div>
+        <input id="ratingValue" type="number" min="1" max="5" placeholder="Értékelés (1-5)" />
+        <input id="ratingUserId" placeholder="Felhasználó ID" />
+        <input id="ratingMediaId" placeholder="Média ID" />
+        <button onclick="createRating()">Új Értékelés hozzáadása</button>
+    </div>
+    <div id="ratingList"></div>
+</section>
+
+<script>
+    const API_BASE = '/api'; // Ha más az alap URL, állítsd át
+
+    // --- Média CRUD ---
+
+    async function fetchMedia() {
+        const res = await fetch(`${API_BASE}/media`);
+        const data = await res.json();
+        const container = document.getElementById('mediaList');
+        container.innerHTML = '';
+        data.forEach(m => {
+            const div = document.createElement('div');
+            div.className = 'item';
+            div.innerHTML = `<strong>${m.title}</strong> (${m.type})
+                             <button onclick="deleteMedia(${m.id})">Törlés</button>`;
+            container.appendChild(div);
+        });
+    }
+
+    async function createMedia() {
+        const title = document.getElementById('mediaTitle').value;
+        const type = document.getElementById('mediaType').value;
+        if (!title || !type) {
+            alert('Add meg a címet és típust!');
+            return;
+        }
+        const res = await fetch(`${API_BASE}/media`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({title, type})
+        });
+        if (res.ok) {
+            document.getElementById('mediaTitle').value = '';
+            document.getElementById('mediaType').value = '';
+            fetchMedia();
+        } else {
+            alert('Hiba a média létrehozásakor');
+        }
+    }
+
+    async function deleteMedia(id) {
+        const res = await fetch(`${API_BASE}/media/${id}`, {method: 'DELETE'});
+        if (res.ok) fetchMedia();
+        else alert('Hiba a törléskor');
+    }
+
+    // --- Felhasználók CRUD ---
+
+    async function fetchUsers() {
+        const res = await fetch(`${API_BASE}/users`);
+        const data = await res.json();
+        const container = document.getElementById('userList');
+        container.innerHTML = '';
+        data.forEach(u => {
+            const div = document.createElement('div');
+            div.className = 'item';
+            div.innerHTML = `<strong>${u.name}</strong> (${u.email}) - ID: ${u.id}
+                             <button onclick="deleteUser(${u.id})">Törlés</button>`;
+            container.appendChild(div);
+        });
+    }
+
+    async function createUser() {
+        const name = document.getElementById('userName').value;
+        const email = document.getElementById('userEmail').value;
+        if (!name || !email) {
+            alert('Add meg a nevet és email címet!');
+            return;
+        }
+        const res = await fetch(`${API_BASE}/users`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({name, email})
+        });
+        if (res.ok) {
+            document.getElementById('userName').value = '';
+            document.getElementById('userEmail').value = '';
+            fetchUsers();
+        } else {
+            alert('Hiba a felhasználó létrehozásakor');
+        }
+    }
+
+    async function deleteUser(id) {
+        const res = await fetch(`${API_BASE}/users/${id}`, {method: 'DELETE'});
+        if (res.ok) fetchUsers();
+        else alert('Hiba a törléskor');
+    }
+
+    // --- Értékelések CRUD ---
+
+    async function fetchRatings() {
+        const res = await fetch(`${API_BASE}/ratings`);
+        const data = await res.json();
+        const container = document.getElementById('ratingList');
+        container.innerHTML = '';
+        data.forEach(r => {
+            const div = document.createElement('div');
+            div.className = 'item';
+            div.innerHTML = `Felhasználó ID: ${r.userId}, Média ID: ${r.mediaId}, Értékelés: ${r.value}
+                             <button onclick="deleteRating(${r.id})">Törlés</button>`;
+            container.appendChild(div);
+        });
+    }
+
+    async function createRating() {
+        const value = parseInt(document.getElementById('ratingValue').value);
+        const userId = parseInt(document.getElementById('ratingUserId').value);
+        const mediaId = parseInt(document.getElementById('ratingMediaId').value);
+        if (!value || !userId || !mediaId || value < 1 || value > 5) {
+            alert('Add meg helyesen az értékelés, felhasználó ID és média ID mezőket!');
+            return;
+        }
+        const res = await fetch(`${API_BASE}/ratings`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({value, userId, mediaId})
+        });
+        if (res.ok) {
+            document.getElementById('ratingValue').value = '';
+            document.getElementById('ratingUserId').value = '';
+            document.getElementById('ratingMediaId').value = '';
+            fetchRatings();
+        } else {
+            alert('Hiba az értékelés létrehozásakor');
+        }
+    }
+
+    async function deleteRating(id) {
+        const res = await fetch(`${API_BASE}/ratings/${id}`, {method: 'DELETE'});
+        if (res.ok) fetchRatings();
+        else alert('Hiba a törléskor');
+    }
+
+    // --- Oldal betöltésekor listázunk ---
+    window.onload = () => {
+        fetchMedia();
+        fetchUsers();
+        fetchRatings();
+    }
+</script>
+
+</body>
+</html>
