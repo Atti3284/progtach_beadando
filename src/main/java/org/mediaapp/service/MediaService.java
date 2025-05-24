@@ -1,41 +1,42 @@
 package org.mediaapp.service;
 
-import org.mediaapp.model.MediaItem;
+import org.mediaapp.model.Media;
 import org.mediaapp.repository.MediaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Service
 public class MediaService {
-    private final MediaRepository repository;
+    private final MediaRepository mediaRepository;
 
-    public MediaService(MediaRepository repository) {
-        this.repository = repository;
+    public MediaService(MediaRepository mediaRepository) {
+        this.mediaRepository = mediaRepository;
     }
 
-    public List<MediaItem> getAll() {
-        return repository.findAll();
+    public List<Media> getAll() {
+        return mediaRepository.findAll();
     }
 
-    public Optional<MediaItem> getById(Long id) {
-        return repository.findById(id);
+    public Media getById(Long id) {
+        return mediaRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Media not found with ID: " + id));
     }
 
-    public MediaItem create(MediaItem media) {
-        return repository.save(media);
+    public Media create(Media media) {
+        return mediaRepository.save(media);
     }
 
-    public MediaItem update(Long id, MediaItem updated) {
-        return repository.findById(id).map(media -> {
-            media.setTitle(updated.getTitle());
-            media.setType(updated.getType());
-            return repository.save(media);
-        }).orElseThrow(() -> new RuntimeException("Media not found"));
+    public Media update(Long id, Media updatedMedia) {
+        Media existing = getById(id);
+        existing.setTitle(updatedMedia.getTitle());
+        existing.setType(updatedMedia.getType());
+        existing.setYear(updatedMedia.getYear());
+        return mediaRepository.save(existing);
     }
 
     public void delete(Long id) {
-        repository.deleteById(id);
+        mediaRepository.deleteById(id);
     }
 }

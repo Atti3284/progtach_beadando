@@ -5,37 +5,37 @@ import org.mediaapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
-    private final UserRepository repository;
+    private final UserRepository userRepository;
 
-    public UserService(UserRepository repository) {
-        this.repository = repository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public List<User> getAll() {
-        return repository.findAll();
+        return userRepository.findAll();
     }
 
-    public Optional<User> getById(Long id) {
-        return repository.findById(id);
+    public User getById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id " + id));
     }
 
     public User create(User user) {
-        return repository.save(user);
+        return userRepository.save(user);
     }
 
-    public User update(Long id, User userData) {
-        return repository.findById(id).map(user -> {
-            user.setUsername(userData.getUsername());
-            user.setEmail(userData.getEmail());
-            return repository.save(user);
-        }).orElseThrow(() -> new RuntimeException("User not found"));
+    public User update(Long id, User userDetails) {
+        User user = getById(id);
+        user.setUsername(userDetails.getUsername());
+        user.setPassword(userDetails.getPassword());
+        user.setEmail(userDetails.getEmail());
+        return userRepository.save(user);
     }
 
     public void delete(Long id) {
-        repository.deleteById(id);
+        userRepository.deleteById(id);
     }
 }

@@ -10,13 +10,9 @@ import java.util.List;
 @RequestMapping("/api/ratings")
 public class RatingController {
     private final RatingService ratingService;
+
     public RatingController(RatingService ratingService) {
         this.ratingService = ratingService;
-    }
-
-    @PostMapping
-    public Rating createRating(@RequestBody Rating rating) {
-        return ratingService.create(rating);
     }
 
     @GetMapping
@@ -24,14 +20,19 @@ public class RatingController {
         return ratingService.getAll();
     }
 
-    @GetMapping("/user/{userId}")
-    public List<Rating> getByUserId(@PathVariable Long userId) {
-        return ratingService.getByUserId(userId);
+    @GetMapping("/{id}")
+    public Rating getRatingById(@PathVariable Long id) {
+        return ratingService.getById(id);
     }
 
-    @GetMapping("/media/{mediaItemId}")
-    public List<Rating> getByMediaItemId(@PathVariable Long mediaItemId) {
-        return ratingService.getByMediaItemId(mediaItemId);
+    @PostMapping
+    public Rating createRating(@RequestBody Rating rating) {
+        return ratingService.create(rating);
+    }
+
+    @PutMapping("/{id}")
+    public Rating updateRating(@PathVariable Long id, @RequestBody Rating rating) {
+        return ratingService.update(id, rating);
     }
 
     @DeleteMapping("/{id}")

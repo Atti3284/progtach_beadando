@@ -9,41 +9,34 @@ import java.util.Optional;
 
 @Service
 public class RatingService {
-    private final RatingRepository repository;
+    private final RatingRepository ratingRepository;
 
-    public RatingService(RatingRepository repository) {
-        this.repository = repository;
+    public RatingService(RatingRepository ratingRepository) {
+        this.ratingRepository = ratingRepository;
     }
 
     public List<Rating> getAll() {
-        return repository.findAll();
+        return ratingRepository.findAll();
     }
 
-    public Optional<Rating> getById(Long id) {
-        return repository.findById(id);
+    public Rating getById(Long id) {
+        return ratingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Rating not found with id " + id));
     }
 
     public Rating create(Rating rating) {
-        return repository.save(rating);
+        return ratingRepository.save(rating);
     }
 
-    public Rating update(Long id, Rating updated) {
-        return repository.findById(id).map(rating -> {
-            rating.setScore(updated.getScore());
-            rating.setComment(updated.getComment());
-            return repository.save(rating);
-        }).orElseThrow(() -> new RuntimeException("Rating not found"));
+    public Rating update(Long id, Rating ratingDetails) {
+        Rating rating = getById(id);
+        rating.setScore(ratingDetails.getScore());
+        rating.setComment(ratingDetails.getComment());
+        rating.setMedia(ratingDetails.getMedia());
+        return ratingRepository.save(rating);
     }
 
     public void delete(Long id) {
-        repository.deleteById(id);
-    }
-
-    public List<Rating> getByUserId(Long userId) {
-        return repository.findByUserId(userId);
-    }
-
-    public List<Rating> getByMediaItemId(Long mediaItemId) {
-        return repository.findByMediaItemId(mediaItemId);
+        ratingRepository.deleteById(id);
     }
 }

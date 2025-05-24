@@ -18,13 +18,22 @@ public class UserController {
 
     @GetMapping
     public List<User> getAllUsers(){
-
         return userService.getAll();
+    }
+
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable Long id){
+        return userService.getById(id);
     }
 
     @PostMapping
     public User createUser(@RequestBody User user){
         return userService.create(user);
+    }
+
+    @PutMapping("/{id}")
+    public User updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+        return userService.update(id, userDetails);
     }
 
     @DeleteMapping("/{id}")
