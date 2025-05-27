@@ -1,6 +1,11 @@
 package org.mediaapp.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Column;
 
 @Entity
 @Table(name = "users")
@@ -19,7 +24,7 @@ public class User {
     private String email;
 
     // Konstruktorok
-    public User() {}
+    public User() { }
 
     public User(String username, String password, String email) {
         this.username = username;

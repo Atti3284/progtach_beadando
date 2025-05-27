@@ -5,14 +5,13 @@ import org.mediaapp.repository.RatingRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RatingService {
     private final RatingRepository ratingRepository;
 
-    public RatingService(RatingRepository ratingRepository) {
-        this.ratingRepository = ratingRepository;
+    public RatingService(RatingRepository repository) {
+        this.ratingRepository = repository;
     }
 
     public List<Rating> getAll() {
@@ -21,7 +20,8 @@ public class RatingService {
 
     public Rating getById(Long id) {
         return ratingRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Rating not found with id " + id));
+                .orElseThrow(() -> new RuntimeException
+                        ("Rating not found with id " + id));
     }
 
     public Rating create(Rating rating) {

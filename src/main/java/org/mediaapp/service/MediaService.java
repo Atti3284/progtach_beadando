@@ -11,8 +11,8 @@ import java.util.NoSuchElementException;
 public class MediaService {
     private final MediaRepository mediaRepository;
 
-    public MediaService(MediaRepository mediaRepository) {
-        this.mediaRepository = mediaRepository;
+    public MediaService(MediaRepository repository) {
+        this.mediaRepository = repository;
     }
 
     public List<Media> getAll() {
@@ -21,7 +21,8 @@ public class MediaService {
 
     public Media getById(Long id) {
         return mediaRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Media not found with ID: " + id));
+                .orElseThrow(() -> new NoSuchElementException
+                        ("Media not found with ID: " + id));
     }
 
     public Media create(Media media) {

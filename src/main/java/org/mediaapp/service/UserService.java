@@ -10,8 +10,8 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserService(UserRepository repository) {
+        this.userRepository = repository;
     }
 
     public List<User> getAll() {
@@ -20,7 +20,8 @@ public class UserService {
 
     public User getById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id " + id));
+                .orElseThrow(() -> new RuntimeException
+                        ("User not found with id " + id));
     }
 
     public User create(User user) {
