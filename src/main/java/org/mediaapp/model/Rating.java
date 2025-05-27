@@ -15,13 +15,12 @@ public class Rating {
     private Long id;
     private int score; // pl. 1-10 vagy 1-5 csillag
     private String comment;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "media_id")
+
+    @ManyToOne
+    @JoinColumn(name = "media_id", nullable = false)
     private Media media;
 
-    // Konstruktorok
-    public Rating() {}
+    public Rating() { }
 
     public Rating(int score, String comment, Media media) {
         this.score = score;
@@ -34,31 +33,31 @@ public class Rating {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Long ratingid) {
+        this.id = ratingid;
     }
 
     public int getScore() {
         return score;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public void setScore(int ratingscore) {
+        this.score = ratingscore;
     }
 
     public String getComment() {
         return comment;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setComment(String ratingcomment) {
+        this.comment = ratingcomment;
     }
 
     public Media getMedia() {
         return media;
     }
 
-    public void setMedia(Media media) {
-        this.media = media;
+    public void setMedia(Media ratingmedia) {
+        this.media = ratingmedia;
     }
 }
