@@ -18,8 +18,8 @@ import java.util.List;
 public class RatingController {
     private final RatingService ratingService;
 
-    public RatingController(RatingService ratingService) {
-        this.ratingService = ratingService;
+    public RatingController(RatingService service) {
+        this.ratingService = service;
     }
 
     @GetMapping
@@ -38,7 +38,8 @@ public class RatingController {
     }
 
     @PutMapping("/{id}")
-    public Rating updateRating(@PathVariable Long id, @RequestBody Rating rating) {
+    public Rating updateRating(
+            @PathVariable Long id, @RequestBody Rating rating) {
         return ratingService.update(id, rating);
     }
 
