@@ -1,20 +1,26 @@
-
 package org.mediaapp.controller;
 
 import org.mediaapp.model.Media;
 import org.mediaapp.service.MediaService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@RestController()
+@RestController
 @RequestMapping("/api/media")
 public class MediaController {
     private final MediaService mediaService;
 
-    public MediaController(MediaService mediaService) {
-        this.mediaService = mediaService;
+    public MediaController(MediaService service) {
+        this.mediaService = service;
     }
 
     @GetMapping
@@ -35,7 +41,10 @@ public class MediaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Media> updateMedia(@PathVariable Long id, @RequestBody Media media) {
+    public ResponseEntity<Media> updateMedia(
+            @PathVariable Long id,
+            @RequestBody Media media
+    ) {
         Media updated = mediaService.update(id, media);
         return ResponseEntity.ok(updated);
     }
