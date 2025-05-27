@@ -21,8 +21,9 @@ public class MediaService {
 
     public Media getById(Long id) {
         return mediaRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException
-                        ("Media not found with ID: " + id));
+                .orElseThrow(() -> new
+                        NoSuchElementException("Media not found with ID: "
+                        + id));
     }
 
     public Media create(Media media) {

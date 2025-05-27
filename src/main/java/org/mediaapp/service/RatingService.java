@@ -20,8 +20,9 @@ public class RatingService {
 
     public Rating getById(Long id) {
         return ratingRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException
-                        ("Rating not found with id " + id));
+                .orElseThrow(() -> new
+                        RuntimeException("Rating not found with id "
+                        + id));
     }
 
     public Rating create(Rating rating) {
