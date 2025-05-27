@@ -1,6 +1,12 @@
 package org.mediaapp.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.FetchType;
 
 @Entity
 public class Rating {
@@ -9,6 +15,7 @@ public class Rating {
     private Long id;
     private int score; // pl. 1-10 vagy 1-5 csillag
     private String comment;
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "media_id")
     private Media media;
