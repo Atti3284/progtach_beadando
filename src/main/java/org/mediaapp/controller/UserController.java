@@ -19,8 +19,8 @@ public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService){
-        this.userService = userService;
+    public UserController(UserService service){
+        this.userService = service;
     }
 
     @GetMapping
