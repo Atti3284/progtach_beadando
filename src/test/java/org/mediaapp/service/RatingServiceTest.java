@@ -2,7 +2,9 @@ package org.mediaapp.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mediaapp.model.Media;
 import org.mediaapp.model.Rating;
+import org.mediaapp.repository.MediaRepository;
 import org.mediaapp.repository.RatingRepository;
 
 import java.util.Arrays;
@@ -15,12 +17,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class RatingServiceTest {
 
     private RatingRepository ratingRepository;
+    private MediaRepository mediaRepository;
     private RatingService ratingService;
 
     @BeforeEach
     void setUp() {
         ratingRepository = mock(RatingRepository.class);
-        ratingService = new RatingService(ratingRepository);
+        mediaRepository = mock(MediaRepository.class);
+        ratingService = new RatingService(ratingRepository, mediaRepository);
     }
 
     @Test
@@ -55,6 +59,11 @@ public class RatingServiceTest {
     @Test
     void testCreate() {
         Rating rating = mock(Rating.class);
+        Media media = mock(Media.class);
+        when(media.getId()).thenReturn(1L);
+        when(rating.getMedia()).thenReturn(media);
+
+        when(mediaRepository.findById(1L)).thenReturn(Optional.of(media));
         when(ratingRepository.save(rating)).thenReturn(rating);
 
         Rating result = ratingService.create(rating);
@@ -69,15 +78,19 @@ public class RatingServiceTest {
         when(ratingRepository.save(existing)).thenReturn(existing);
 
         Rating updates = mock(Rating.class);
+        Media updateMedia = mock(Media.class);
+        when(updateMedia.getId()).thenReturn(2L);
+        when(updates.getMedia()).thenReturn(updateMedia);
         when(updates.getScore()).thenReturn(5);
         when(updates.getComment()).thenReturn("Updated");
-        when(updates.getMedia()).thenReturn(null);
+
+        when(mediaRepository.findById(2L)).thenReturn(Optional.of(updateMedia));
 
         Rating result = ratingService.update(1L, updates);
 
         verify(existing, times(1)).setScore(5);
         verify(existing, times(1)).setComment("Updated");
-        verify(existing, times(1)).setMedia(null);
+        verify(existing, times(1)).setMedia(updateMedia);
         verify(ratingRepository, times(1)).save(existing);
         assertEquals(existing, result);
     }
