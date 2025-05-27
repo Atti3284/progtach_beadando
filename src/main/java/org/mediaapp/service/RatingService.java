@@ -13,9 +13,10 @@ public class RatingService {
     private final RatingRepository ratingRepository;
     private final MediaRepository mediaRepository;
 
-    public RatingService(RatingRepository ratingRepository, MediaRepository mediaRepository) {
-        this.ratingRepository = ratingRepository;
-        this.mediaRepository = mediaRepository;
+    public RatingService(RatingRepository rating_Repository,
+                         MediaRepository media_Repository) {
+        this.ratingRepository = rating_Repository;
+        this.mediaRepository = media_Repository;
     }
 
     public List<Rating> getAll() {
@@ -31,11 +32,13 @@ public class RatingService {
 
     public Rating create(Rating rating) {
         if (rating.getMedia() == null || rating.getMedia().getId() == null) {
-            throw new IllegalArgumentException("A 'media' mező és annak 'id'-je kötelező!");
+            throw new IllegalArgumentException("A 'media' mező és " +
+                    "annak 'id'-je kötelező!");
         }
         Long mediaId = rating.getMedia().getId();
         Media media = mediaRepository.findById(mediaId)
-                .orElseThrow(() -> new RuntimeException("Media not found with id " + mediaId));
+                .orElseThrow(() -> new RuntimeException("Media not found with id "
+                        + mediaId));
         rating.setMedia(media);
         return ratingRepository.save(rating);
     }
@@ -46,7 +49,8 @@ public class RatingService {
         rating.setComment(ratingDetails.getComment());
         Long mediaId = ratingDetails.getMedia().getId();
         Media media = mediaRepository.findById(mediaId)
-                .orElseThrow(() -> new RuntimeException("Media not found with id " + mediaId));
+                .orElseThrow(() -> new RuntimeException("Media not found with id "
+                        + mediaId));
         rating.setMedia(media);
         return ratingRepository.save(rating);
     }
