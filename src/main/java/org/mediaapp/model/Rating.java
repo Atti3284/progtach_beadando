@@ -17,7 +17,7 @@ public class Rating {
     private int score;
     private String comment;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "media_id", nullable = false)
     private Media media;
 

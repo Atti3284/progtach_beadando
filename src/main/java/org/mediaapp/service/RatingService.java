@@ -1,6 +1,8 @@
 package org.mediaapp.service;
 
+import org.mediaapp.model.Media;
 import org.mediaapp.model.Rating;
+import org.mediaapp.repository.MediaRepository;
 import org.mediaapp.repository.RatingRepository;
 import org.springframework.stereotype.Service;
 
@@ -9,9 +11,11 @@ import java.util.List;
 @Service
 public class RatingService {
     private final RatingRepository ratingRepository;
+    private final MediaRepository mediaRepository;
 
-    public RatingService(RatingRepository repository) {
-        this.ratingRepository = repository;
+    public RatingService(RatingRepository ratingRepository, MediaRepository mediaRepository) {
+        this.ratingRepository = ratingRepository;
+        this.mediaRepository = mediaRepository;
     }
 
     public List<Rating> getAll() {
@@ -26,6 +30,13 @@ public class RatingService {
     }
 
     public Rating create(Rating rating) {
+        if (rating.getMedia() == null || rating.getMedia().getId() == null) {
+            throw new IllegalArgumentException("A 'media' mező és annak 'id'-je kötelező!");
+        }
+        Long mediaId = rating.getMedia().getId();
+        Media media = mediaRepository.findById(mediaId)
+                .orElseThrow(() -> new RuntimeException("Media not found with id " + mediaId));
+        rating.setMedia(media);
         return ratingRepository.save(rating);
     }
 
@@ -33,7 +44,10 @@ public class RatingService {
         Rating rating = getById(id);
         rating.setScore(ratingDetails.getScore());
         rating.setComment(ratingDetails.getComment());
-        rating.setMedia(ratingDetails.getMedia());
+        Long mediaId = ratingDetails.getMedia().getId();
+        Media media = mediaRepository.findById(mediaId)
+                .orElseThrow(() -> new RuntimeException("Media not found with id " + mediaId));
+        rating.setMedia(media);
         return ratingRepository.save(rating);
     }
 
